@@ -39,7 +39,7 @@ class Trie(object):
                 node = new_node
 
         # Mark the end of a word
-        if word[len(word) - 1] == "#":
+        if word[len(word) - 1] == "\n":
             node.is_end = True
 
         # Increment the counter to indicate that we see this word once more
@@ -84,37 +84,6 @@ class Trie(object):
         return sorted(self.output, key=lambda x: x[1], reverse=True)
 
 
-def all_prefixes(string):
-    start, end = 0, 0
-    results = []
-    while start < len(string):
-        if string[end] == string[end - start]:
-            results.append(string[start:end + 1])
-            end += 1
-            if end == len(string):
-                start += 1
-                end = start
-        else:
-            start += 1
-            end = start
-    return results
 
 
-# string1 = "how to sleep 10 hours#"
-# string2 = "how to eat burger#"
-# string3 = "I love programming#"
-# prefixes1 = all_prefixes(string1)
-# prefixes2 = all_prefixes(string2)
-# prefixes3 = all_prefixes(string3)
 
-# t = Trie()
-# for prefix in prefixes1:
-#     t.insert(prefix)
-#
-# for prefix in prefixes2:
-#     t.insert(prefix)
-#
-# for prefix in prefixes3:
-#     t.insert(prefix)
-#
-# print(t.query("I"))  # --> "I"
