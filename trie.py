@@ -1,5 +1,8 @@
+from string_utils import get_text_suffixes
+from auto_complete import AutoCompleteData
+
 class TrieNode:
-    """A node in the trie structure"""
+    """A node in the trie data structure"""
 
     def __init__(self, char):
         self.char = char
@@ -23,14 +26,11 @@ class Trie(object):
         """
         self.root = TrieNode("")
 
-    def insert(self, text):
+    def insert(self, text, path):
         """Insert a word into the trie"""
 
-        words = text.split(' ')
-        for i in range(len(words)):
-            if words[i] in words[0:i]:
-                continue
-            sentence = ' '.join(words[i:])
+        suffixes = get_text_suffixes(text)
+        for sentence in suffixes:
             node = self.root
             # Loop through each character in the word
             # Check if there is no child containing the character, create a new child for the current node
@@ -46,8 +46,7 @@ class Trie(object):
             # Mark the end of a word
             if sentence[len(sentence) - 1] == "\n":
                 node.is_end = True
-                node.source_sentences.append(text)
-
+                node.source_sentences.append((text[:-1], path))
         # Increment the counter to indicate that we see this word once more
         node.counter += 1
 
@@ -60,7 +59,10 @@ class Trie(object):
                 word while traversing the trie
         """
         if node.is_end:
-            self.output.extend(node.source_sentences)
+            for text, path in node.source_sentences:
+                offset = text.index(prefix)
+                self.output.append(AutoCompleteData(text, path, offset, 1))
+            # self.output.extend(node.source_sentences)
 
         for child in node.children.values():
             self.dfs(child, prefix + node.char)
@@ -87,9 +89,4 @@ class Trie(object):
         self.dfs(node, x[:-1])
 
         # Sort the results in reverse order and return
-        return sorted(self.output, key=lambda x: x[1], reverse=True)
-
-
-
-
-
+        return sorted(self.output, key=lambda x: x.offset)

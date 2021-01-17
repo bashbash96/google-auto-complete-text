@@ -3,6 +3,16 @@ import os
 
 
 def process_input(dir_path, trie):
+    """
+    process and insert all data from a given directory and all of its sub-directories
+    :param dir_path: directory path
+    :param trie: trie object
+    :return: None
+    """
+
+    if not os.path.isdir(dir_path):
+        raise Exception("Invalid directory path")
+
     dirs = deque([dir_path])
     while len(dirs) > 0:
         curr_dir = dirs.popleft()
@@ -11,32 +21,20 @@ def process_input(dir_path, trie):
             curr_path = f"{curr_dir}/{file}"
             if os.path.isdir(curr_path):
                 dirs.append(curr_path)
-                print(curr_path, " Is a directory")
                 continue
-            process_file(curr_path, trie)
+            elif os.path.isfile(curr_path):
+                insert_file_to_trie(curr_path, trie)
 
 
-def process_file(path, trie):
+def insert_file_to_trie(path, trie):
+    """
+    insert all file sentences (a live) into the trie data structure
+    :param path: file path
+    :param trie: trie object
+    :return: None
+    """
+
     with open(path, 'r+') as f:
         lines = f.readlines()
         for line in lines:
-            trie.insert(line)
-
-
-
-def all_prefixes(string):
-    start, end = 0, 0
-    results = []
-    while start < len(string):
-        if string[end] == string[end - start]:
-            results.append(string[start:end + 1])
-            end += 1
-            if end == len(string):
-                start += 1
-                end = start
-        else:
-            start += 1
-            end = start
-    return results
-
-
+            trie.insert(line, path)

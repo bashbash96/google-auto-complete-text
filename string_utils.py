@@ -1,3 +1,21 @@
+def get_text_suffixes(text):
+    """
+    Function to get all the suffixes substrings of a given string
+    :param text: the original string
+    :return: list of all suffixes
+    """
+
+    words = text.split(' ')
+    suffixes = []
+    for i in range(len(words)):
+        if words[i] in words[0:i]:
+            continue
+        sentence = ' '.join(words[i:])
+        suffixes.append(sentence)
+
+    return suffixes
+
+
 def lev_distance(text1, text2):
     """
     return the minimum distance between two strings using Levenshtein Algorithm
@@ -48,6 +66,3 @@ def lev_distance(text1, text2):
 
     # Time O(n * m)
     # Space O(m)
-
-
-print(lev_distance('abc', 'aac'))
