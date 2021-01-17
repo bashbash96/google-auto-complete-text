@@ -7,3 +7,5 @@ google
 to be or not to be
 google docs
 instagram
+How to play chess
+CPP vector
