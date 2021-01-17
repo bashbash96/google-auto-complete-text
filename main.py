@@ -10,7 +10,8 @@ from basic_trie import Trie
 
 t = Trie()
 process_input('Input', t)
-print(t.query('goo'))
+print(t.query('go'))
+
 # for prefix in prefixes1:
 #     t.insert(prefix)
 #
@@ -20,4 +21,4 @@ print(t.query('goo'))
 # for prefix in prefixes3:
 #     t.insert(prefix)
 
-print(t.query("I lov"))  # --> "I"
+# print(t.query("I lov"))  # --> "I"

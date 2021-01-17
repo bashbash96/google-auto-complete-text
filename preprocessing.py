@@ -20,9 +20,8 @@ def process_file(path, trie):
     with open(path, 'r+') as f:
         lines = f.readlines()
         for line in lines:
-            prefixes = all_prefixes(line)
-            for pre in prefixes:
-                trie.insert(pre)
+            trie.insert(line)
+
 
 
 def all_prefixes(string):

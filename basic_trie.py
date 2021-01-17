@@ -4,6 +4,7 @@ class TrieNode:
     def __init__(self, char):
         self.char = char
         self.is_end = False
+        self.source_sentences = list()
         # a counter indicating how many times a word is inserted
         # (if this node's is_end is True)
         self.counter = 0
@@ -22,25 +23,30 @@ class Trie(object):
         """
         self.root = TrieNode("")
 
-    def insert(self, word):
+    def insert(self, text):
         """Insert a word into the trie"""
-        node = self.root
 
-        # Loop through each character in the word
-        # Check if there is no child containing the character, create a new child for the current node
-        for char in word:
-            if char in node.children:
-                node = node.children[char]
-            else:
-                # If a character is not found,
-                # create a new node in the trie
-                new_node = TrieNode(char)
-                node.children[char] = new_node
-                node = new_node
-
-        # Mark the end of a word
-        if word[len(word) - 1] == "\n":
-            node.is_end = True
+        words = text.split(' ')
+        for i in range(len(words)):
+            if words[i] in words[0:i]:
+                continue
+            sentence = ' '.join(words[i:])
+            node = self.root
+            # Loop through each character in the word
+            # Check if there is no child containing the character, create a new child for the current node
+            for char in sentence:
+                if char in node.children:
+                    node = node.children[char]
+                else:
+                    # If a character is not found,
+                    # create a new node in the trie
+                    new_node = TrieNode(char)
+                    node.children[char] = new_node
+                    node = new_node
+            # Mark the end of a word
+            if sentence[len(sentence) - 1] == "\n":
+                node.is_end = True
+                node.source_sentences.append(text)
 
         # Increment the counter to indicate that we see this word once more
         node.counter += 1
@@ -54,7 +60,7 @@ class Trie(object):
                 word while traversing the trie
         """
         if node.is_end:
-            self.output.append((prefix, node.counter))
+            self.output.extend(node.source_sentences)
 
         for child in node.children.values():
             self.dfs(child, prefix + node.char)
