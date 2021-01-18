@@ -1,5 +1,6 @@
 from collections import deque
 import os
+from string_utils import clean_text
 
 
 def process_input(dir_path, trie):
@@ -24,6 +25,7 @@ def process_input(dir_path, trie):
                 continue
             elif os.path.isfile(curr_path):
                 insert_file_to_trie(curr_path, trie)
+                print(f"Inserted {curr_path}")
 
 
 def insert_file_to_trie(path, trie):
@@ -34,7 +36,12 @@ def insert_file_to_trie(path, trie):
     :return: None
     """
 
-    with open(path, 'r+') as f:
+    with open(path, 'r+', encoding="utf8") as f:
         lines = f.readlines()
         for idx, line in enumerate(lines):
-            trie.insert(line, path, idx)
+            print(path, idx)
+            cleaned_line = clean_text(line)
+            if len(cleaned_line) == 0:
+                continue
+
+            trie.insert(cleaned_line, path, idx)

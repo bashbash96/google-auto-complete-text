@@ -1,5 +1,7 @@
 from index_writer import write_index
-import argparse
+from index_reader import read_index
+from string_utils import clean_text
+
 #
 # t = Trie()
 # process_input('Input', t)
@@ -33,16 +35,18 @@ def main():
 
     :return:
     """
-    trie = write_index("input")
-    print("The System is ready. Enter your text:")
+    path = write_index("Archive/")
     user_input = ''
+    trie = read_index(path)
+    print("The System is ready. Enter your text:")
     while True:
-        user_input += get_valid_input()
+        user_input += clean_text(get_valid_input())
+        if user_input[-1] == '#':
+            user_input = ''
+            continue
         if user_input[-2:] == '#q':
             break
         print_suggestions(trie.query(user_input))
-        if user_input[-1] == '#':
-            user_input = ''
         print(user_input, end='')
 
 

@@ -1,5 +1,5 @@
 import numpy as np
-from string_utils import get_text_suffixes, get_text_from_path
+from string_utils import get_text_suffixes, get_text_from_path, clean_text
 from auto_complete import AutoCompleteData
 
 SUB_SCORE = 1
@@ -167,9 +167,9 @@ class Trie(object):
         if len(node.source_sentences) > 0:
             for line_idx, path in node.source_sentences:
                 text = get_text_from_path(path, line_idx)
-
+                cleaned_text = clean_text(text)
                 try:
-                    offset = text.index(prefix)
+                    offset = cleaned_text.index(prefix)
                 except Exception as e:
                     continue
                 if (text, path) in self.visited:

@@ -84,6 +84,8 @@ def generate_distance_one_string(txt):
 
 def clean_text(text):
     # Remove white spaces
+    text = text.encode('ascii', 'ignore').decode('ascii')
+
     white_spaces = re.compile("\s+")
     text = white_spaces.sub(' ', text)
     # Remove html tags
@@ -92,15 +94,13 @@ def clean_text(text):
     # Take the text as lower
     text = text.lower()
     # Remove first space and last enter
-    if text[0] == " ":
-        text = text[1:]
-    if text[len(text) - 1] == '\n':
-        text = text[:-2]
-    return text
+    text = text.replace('\n', '')
+
+    return text.strip()
 
 
 def get_text_from_path(path, idx):
-    with open(path, 'r+') as fid:
+    with open(path, 'r+', encoding="utf8") as fid:
         lines = fid.readlines()
         if idx >= 0 and idx < len(lines):
             return lines[idx]
