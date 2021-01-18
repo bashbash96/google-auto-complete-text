@@ -97,7 +97,10 @@ class Trie(object):
         if idx >= len(text):
             if sub_idx < 0:
                 return
-            self.dfs(node, text[:-1], len(text), self.get_score(sub_idx, SUB_SCORE))
+            original_len = len(text)
+            if sub_idx != len(text):
+                original_len -= 1
+            self.dfs(node, text[:-1], original_len, self.get_score(sub_idx, SUB_SCORE))
             return
 
         if text[idx] in node.children:
@@ -107,7 +110,7 @@ class Trie(object):
             for char in node.children:
                 if char != text[idx]:
                     spelling_err += 1
-                    self.get_substitution_match(text[:idx] + char + text[idx + 1: - 1], node.children[char], idx + 1,
+                    self.get_substitution_match(text[:idx] + char + text[idx + 1:], node.children[char], idx + 1,
                                                 idx, spelling_err)
                     spelling_err -= 1
         else:
@@ -119,7 +122,7 @@ class Trie(object):
                 for char in node.children:
                     curr_ndoe = node.children[char]
                     if text[idx + 1] in curr_ndoe.children:
-                        self.get_substitution_match(text[:idx] + char + text[idx + 1], curr_ndoe, idx + 1, idx,
+                        self.get_substitution_match(text[:idx] + char + text[idx + 1:], curr_ndoe, idx + 1, idx,
                                                     spelling_err)
 
     def get_remove_match(self, text, node, idx=0, rem_idx=-1, spelling_err=0):
@@ -142,8 +145,10 @@ class Trie(object):
             if len(self.output) >= 5:
                 return
             for char in node.children:
+                if spelling_err > 0:
+                    break
                 spelling_err += 1
-                self.get_remove_match(text[:idx] + text[idx + 1: - 1], node.children[char], idx + 1,
+                self.get_remove_match(text[:idx] + text[idx + 1:], node.children[char], idx,
                                             idx, spelling_err)
                 spelling_err -= 1
         else:
@@ -153,7 +158,7 @@ class Trie(object):
                 return
             else:
                 if text[idx + 1] in node.children:
-                    self.get_remove_match(text[:idx] + text[idx + 1], node.children[text[idx + 1]], idx + 1, idx,
+                    self.get_remove_match(text[:idx] + text[idx + 1:], node, idx, idx,
                                           spelling_err)
 
 
@@ -165,7 +170,7 @@ class Trie(object):
             - prefix: the current prefix, for tracing a
                 word while traversing the trie
         """
-        if len(self.output) >= 5 or node in self.visited:
+        if len(self.output) >= 5 :
             return
 
         if node.is_end:
@@ -174,9 +179,10 @@ class Trie(object):
                     offset = text.index(prefix)
                 except Exception as e:
                     continue
-
+                if (text, path) in self.visited:
+                    return
                 self.output.append(AutoCompleteData(text, path, offset, (original_len * 2) - error_score))
-                self.visited.add(node)
+                self.visited.add((text, path))
 
         for child in node.children.values():
             self.dfs(child, prefix + node.char, original_len, error_score)
