@@ -1,3 +1,6 @@
+import re
+
+
 def get_text_suffixes(text):
     """
     Function to get all the suffixes substrings of a given string
@@ -66,3 +69,29 @@ def lev_distance(text1, text2):
 
     # Time O(n * m)
     # Space O(m)
+
+
+alphabet_list = list(string.ascii_lowercase)
+
+
+def generate_distance_one_string(txt):
+    results = []
+    for i in range(len(txt) - 1, 0 - 1, -1):
+        pass
+
+
+def clean_text(text):
+    # Remove white spaces
+    white_spaces = re.compile("\s+")
+    text = white_spaces.sub(' ', text)
+    # Remove html tags
+    remove_htm_tags = re.compile("&[a-zA-Z]*;")
+    text = remove_htm_tags.sub(' ', text)
+    # Take the text as lower
+    text = text.lower()
+    # Remove first space and last enter
+    if text[0] == " ":
+        text = text[1:]
+    if text[len(text) - 1] == '\n':
+        text = text[:-2]
+    return text
