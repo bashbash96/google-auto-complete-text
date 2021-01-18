@@ -105,3 +105,4 @@ def get_text_from_path(path, idx):
         if idx >= 0 and idx < len(lines):
             return lines[idx]
     return ''
+
