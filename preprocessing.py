@@ -36,5 +36,5 @@ def insert_file_to_trie(path, trie):
 
     with open(path, 'r+') as f:
         lines = f.readlines()
-        for line in lines:
-            trie.insert(line, path)
+        for idx, line in enumerate(lines):
+            trie.insert(line, path, idx)

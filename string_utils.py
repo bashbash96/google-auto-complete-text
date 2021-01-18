@@ -19,6 +19,7 @@ def get_text_suffixes(text):
 
     return suffixes
 
+
 # print(get_text_suffixes("go kareem go\n"))
 def lev_distance(text1, text2):
     """
@@ -96,3 +97,11 @@ def clean_text(text):
     if text[len(text) - 1] == '\n':
         text = text[:-2]
     return text
+
+
+def get_text_from_path(path, idx):
+    with open(path, 'r+') as fid:
+        lines = fid.readlines()
+        if idx >= 0 and idx < len(lines):
+            return lines[idx]
+    return ''

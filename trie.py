@@ -1,5 +1,5 @@
 import numpy as np
-from string_utils import get_text_suffixes
+from string_utils import get_text_suffixes, get_text_from_path
 from auto_complete import AutoCompleteData
 
 SUB_SCORE = 1
@@ -12,11 +12,7 @@ class TrieNode:
 
     def __init__(self, char):
         self.char = char
-        self.is_end = False
         self.source_sentences = list()
-        # a counter indicating how many times a word is inserted
-        # (if this node's is_end is True)
-        self.counter = 0
         # a dictionary of child nodes
         # keys are characters, values are nodes
         self.children = {}
@@ -31,9 +27,8 @@ class Trie(object):
         The root node does not store any character
         """
         self.root = TrieNode("")
-        self.visited = set()
 
-    def insert(self, text, path):
+    def insert(self, text, path, line_idx):
         """Insert a word into the trie"""
 
         suffixes = get_text_suffixes(text)
@@ -51,14 +46,11 @@ class Trie(object):
                     node.children[char] = new_node
                     node = new_node
             # Mark the end of a word
-            if sentence[len(sentence) - 1] == "\n":
-                node.is_end = True
-                node.source_sentences.append((text[:-1], path))
-        # Increment the counter to indicate that we see this word once more
-        node.counter += 1
+            node.source_sentences.append((line_idx, path))
 
     def get_full_match(self, text):
         self.output = []
+        self.visited = set()
         node = self.root
 
         # Check if the prefix is in the trie
@@ -149,7 +141,7 @@ class Trie(object):
                     break
                 spelling_err += 1
                 self.get_remove_match(text[:idx] + text[idx + 1:], node.children[char], idx,
-                                            idx, spelling_err)
+                                      idx, spelling_err)
                 spelling_err -= 1
         else:
             spelling_err += 1
@@ -161,7 +153,6 @@ class Trie(object):
                     self.get_remove_match(text[:idx] + text[idx + 1:], node, idx, idx,
                                           spelling_err)
 
-
     def dfs(self, node, prefix, original_len, error_score):
         """Depth-first traversal of the trie
 
@@ -170,11 +161,13 @@ class Trie(object):
             - prefix: the current prefix, for tracing a
                 word while traversing the trie
         """
-        if len(self.output) >= 5 :
+        if len(self.output) >= 5:
             return
 
-        if node.is_end:
-            for text, path in node.source_sentences:
+        if len(node.source_sentences) > 0:
+            for line_idx, path in node.source_sentences:
+                text = get_text_from_path(path, line_idx)
+
                 try:
                     offset = text.index(prefix)
                 except Exception as e:
