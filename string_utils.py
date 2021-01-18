@@ -72,7 +72,7 @@ def lev_distance(text1, text2):
     # Space O(m)
 
 
-alphabet_list = list(string.ascii_lowercase)
+# alphabet_list = list(string.ascii_lowercase)
 
 
 def generate_distance_one_string(txt):
