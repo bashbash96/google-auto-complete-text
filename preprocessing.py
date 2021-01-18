@@ -39,7 +39,6 @@ def insert_file_to_trie(path, trie):
     with open(path, 'r+', encoding="utf8") as f:
         lines = f.readlines()
         for idx, line in enumerate(lines):
-            print(path, idx)
             cleaned_line = clean_text(line)
             if len(cleaned_line) == 0:
                 continue

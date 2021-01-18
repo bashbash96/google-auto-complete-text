@@ -3,6 +3,7 @@ import pickle
 from preprocessing import process_input
 from trie import Trie
 
+
 def write_index(dir_path):
     """
 
@@ -20,4 +21,4 @@ def write_index(dir_path):
         pickle.dump(trie, fid, protocol=pickle.HIGHEST_PROTOCOL)
 
     return save_path
-    #TODO: save trie as pickle file, return the path for the saved file..
+    # TODO: save trie as pickle file, return the path for the saved file..

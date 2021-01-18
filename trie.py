@@ -48,7 +48,7 @@ class Trie(object):
             # Mark the end of a word
             node.source_sentences.append((line_idx, path))
 
-    def get_full_match(self, text):
+    def get_full_match(self, text, k):
         self.output = []
         self.visited = set()
         node = self.root
@@ -62,28 +62,30 @@ class Trie(object):
                 return []
 
         # Traverse the trie to get all candidates
-        self.dfs(node, text[:-1], len(text), 0)
+        self.dfs(node, text[:-1], len(text), 0, k)
 
-    def get_score(self, idx, type):
+    @staticmethod
+    def get_score(idx, type):
         """
 
         :param idx:
         :param type: 1- substitution, 2- remove
         :return:
         """
+
         if idx >= (LAST_CHAR_SCORE - 1):
             return type
 
         return type * (LAST_CHAR_SCORE - idx)
 
-    def get_substitution_match(self, text, node, idx=0, sub_idx=-1, spelling_err=0):
+    def get_substitution_match(self, text, node, k, idx=0, sub_idx=-1, spelling_err=0):
         """
 
         :param text:
         :return:
         """
 
-        if spelling_err > 1 or len(self.output) >= 5:
+        if spelling_err > 1 or len(self.output) >= k:
             return
 
         if idx >= len(text):
@@ -92,68 +94,105 @@ class Trie(object):
             original_len = len(text)
             if sub_idx != len(text):
                 original_len -= 1
-            self.dfs(node, text[:-1], original_len, self.get_score(sub_idx, SUB_SCORE))
+            self.dfs(node, text[:-1], original_len, self.get_score(sub_idx, SUB_SCORE), k)
             return
 
         if text[idx] in node.children:
-            self.get_substitution_match(text, node.children[text[idx]], idx + 1, sub_idx, spelling_err)
-            if len(self.output) >= 5:
+            self.get_substitution_match(text, node.children[text[idx]], k, idx + 1, sub_idx, spelling_err)
+            if len(self.output) >= k:
                 return
             for char in node.children:
                 if char != text[idx]:
                     spelling_err += 1
-                    self.get_substitution_match(text[:idx] + char + text[idx + 1:], node.children[char], idx + 1,
+                    self.get_substitution_match(text[:idx] + char + text[idx + 1:], node.children[char], k, idx + 1,
                                                 idx, spelling_err)
                     spelling_err -= 1
         else:
             spelling_err += 1
             if idx == len(text) - 1:
-                self.get_substitution_match(text[:-1], node, idx + 1, idx, spelling_err)
+                self.get_substitution_match(text[:-1], node, k, idx + 1, idx, spelling_err)
                 return
             else:
                 for char in node.children:
                     curr_ndoe = node.children[char]
                     if text[idx + 1] in curr_ndoe.children:
-                        self.get_substitution_match(text[:idx] + char + text[idx + 1:], curr_ndoe, idx + 1, idx,
+                        self.get_substitution_match(text[:idx] + char + text[idx + 1:], curr_ndoe, k, idx + 1, idx,
                                                     spelling_err)
 
-    def get_remove_match(self, text, node, idx=0, rem_idx=-1, spelling_err=0):
+    def get_remove_match(self, text, node, k, idx=0, rem_idx=-1, spelling_err=0):
         """
 
         :param text:
         :return:
         """
-        if spelling_err > 1 or len(self.output) >= 5:
+
+        if spelling_err > 1 or len(self.output) >= k:
             return
 
         if idx >= len(text):
             if rem_idx < 0:
                 return
-            self.dfs(node, text[:-1], len(text), self.get_score(rem_idx, REMOVE_SCORE))
+            self.dfs(node, text[:-1], len(text), self.get_score(rem_idx, REMOVE_SCORE), k)
             return
 
         if text[idx] in node.children:
-            self.get_remove_match(text, node.children[text[idx]], idx + 1, rem_idx, spelling_err)
-            if len(self.output) >= 5:
+            self.get_remove_match(text, node.children[text[idx]], k, idx + 1, rem_idx, spelling_err)
+            if len(self.output) >= k:
                 return
             for char in node.children:
                 if spelling_err > 0:
                     break
                 spelling_err += 1
-                self.get_remove_match(text[:idx] + text[idx + 1:], node.children[char], idx,
+                self.get_remove_match(text[:idx] + text[idx + 1:], node.children[char], k, idx,
                                       idx, spelling_err)
                 spelling_err -= 1
         else:
             spelling_err += 1
             if idx == len(text) - 1:
-                self.get_remove_match(text[:-1], node, idx + 1, idx, spelling_err)
+                self.get_remove_match(text[:-1], node, k, idx + 1, idx, spelling_err)
                 return
             else:
                 if text[idx + 1] in node.children:
-                    self.get_remove_match(text[:idx] + text[idx + 1:], node, idx, idx,
+                    self.get_remove_match(text[:idx] + text[idx + 1:], node, k, idx, idx,
                                           spelling_err)
 
-    def dfs(self, node, prefix, original_len, error_score):
+    def get_add_match(self, text, node, k, idx=0, add_idx=-1, spelling_err=0):
+        """
+
+        :param text:
+        :return:
+        """
+
+        if spelling_err > 1 or len(self.output) >= k:
+            return
+
+        if idx >= len(text):
+            if add_idx < 0:
+                return
+            original_len = len(text)
+            if add_idx != len(text):
+                original_len -= 1
+            self.dfs(node, text[:-1], original_len, self.get_score(add_idx, REMOVE_SCORE), k)
+            return
+
+        if text[idx] in node.children:
+            self.get_add_match(text, node.children[text[idx]], k, idx + 1, add_idx, spelling_err)
+            if len(self.output) >= k:
+                return
+            for char in node.children:
+                spelling_err += 1
+                self.get_add_match(text[:idx] + char + text[idx:], node.children[char], k, idx + 1,
+                                   idx, spelling_err)
+                spelling_err -= 1
+        else:
+            spelling_err += 1
+            for char in node.children:
+                curr_ndoe = node.children[char]
+                if text[idx] in curr_ndoe.children:
+                    self.get_add_match(text[:idx] + char + text[idx:], curr_ndoe, k, idx + 1, idx,
+                                       spelling_err)
+
+    def dfs(self, node, prefix, original_len, error_score, k):
         """Depth-first traversal of the trie
 
         Args:
@@ -161,7 +200,7 @@ class Trie(object):
             - prefix: the current prefix, for tracing a
                 word while traversing the trie
         """
-        if len(self.output) >= 5:
+        if len(self.output) >= k:
             return
 
         if len(node.source_sentences) > 0:
@@ -172,15 +211,15 @@ class Trie(object):
                     offset = cleaned_text.index(prefix)
                 except Exception as e:
                     continue
-                if (text, path) in self.visited:
+                if (line_idx, path) in self.visited:
                     return
                 self.output.append(AutoCompleteData(text, path, offset, (original_len * 2) - error_score))
-                self.visited.add((text, path))
+                self.visited.add((line_idx, path))
 
         for child in node.children.values():
-            self.dfs(child, prefix + node.char, original_len, error_score)
+            self.dfs(child, prefix + node.char, original_len, error_score, k)
 
-    def query(self, text):
+    def get_best_k_completions(self, text, k=5):
         """Given an input (a prefix), retrieve all words stored in
         the trie with that prefix, sort the words by the number of
         times they have been inserted
@@ -189,7 +228,9 @@ class Trie(object):
         # As there can be more than one word with such prefix
 
         # Sort the results in reverse order and return
-        self.get_full_match(text)
-        self.get_substitution_match(text, self.root)
-        self.get_remove_match(text, self.root)
-        return sorted(self.output, key=lambda x: (-x.score, x.completed_sentence))[:5]
+
+        self.get_full_match(text, k)
+        self.get_substitution_match(text, self.root, k)
+        self.get_remove_match(text, self.root, k)
+        self.get_add_match(text, self.root, k)
+        return sorted(self.output, key=lambda x: (-x.score, x.completed_sentence))[:k]

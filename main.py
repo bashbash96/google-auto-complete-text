@@ -2,6 +2,7 @@ from index_writer import write_index
 from index_reader import read_index
 from string_utils import clean_text
 
+
 #
 # t = Trie()
 # process_input('Input', t)
@@ -35,7 +36,7 @@ def main():
 
     :return:
     """
-    path = write_index("Archive/")
+    path = write_index("Input/")
     user_input = ''
     trie = read_index(path)
     print("The System is ready. Enter your text:")
@@ -46,7 +47,7 @@ def main():
             continue
         if user_input[-2:] == '#q':
             break
-        print_suggestions(trie.query(user_input))
+        print_suggestions(trie.get_best_k_completions(user_input))
         print(user_input, end='')
 
 
@@ -59,6 +60,7 @@ def print_suggestions(res):
     else:
         print(f"Here are {len(res)} suggestions:")
     for idx, val in enumerate(res):
-        print(f"{idx+1}. {val.completed_sentence}")
+        print(f"{idx + 1}. {val.completed_sentence}")
+
 
 main()
