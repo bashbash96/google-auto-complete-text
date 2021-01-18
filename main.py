@@ -3,6 +3,6 @@ from trie import Trie
 
 t = Trie()
 process_input('Input', t)
-q = t.query('kah')
+q = t.query("kai")
 for res in q:
     print(res)

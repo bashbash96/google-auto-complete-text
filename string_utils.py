@@ -4,7 +4,8 @@ def get_text_suffixes(text):
     :param text: the original string
     :return: list of all suffixes
     """
-
+    # if text[-1] == '\n':
+    #     text = text[:-1]
     words = text.split(' ')
     suffixes = []
     for i in range(len(words)):
@@ -15,7 +16,7 @@ def get_text_suffixes(text):
 
     return suffixes
 
-
+# print(get_text_suffixes("go kareem go\n"))
 def lev_distance(text1, text2):
     """
     return the minimum distance between two strings using Levenshtein Algorithm
