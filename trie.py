@@ -192,4 +192,4 @@ class Trie(object):
         self.get_full_match(text)
         self.get_substitution_match(text, self.root)
         self.get_remove_match(text, self.root)
-        return sorted(self.output, key=lambda x: (-x.score, x.completed_sentence))
+        return sorted(self.output, key=lambda x: (-x.score, x.completed_sentence))[:5]
