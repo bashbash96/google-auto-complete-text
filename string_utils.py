@@ -1,3 +1,26 @@
+import re
+
+
+def get_text_suffixes(text):
+    """
+    Function to get all the suffixes substrings of a given string
+    :param text: the original string
+    :return: list of all suffixes
+    """
+    # if text[-1] == '\n':
+    #     text = text[:-1]
+    words = text.split(' ')
+    suffixes = []
+    for i in range(len(words)):
+        if words[i] in words[0:i]:
+            continue
+        sentence = ' '.join(words[i:])
+        suffixes.append(sentence)
+
+    return suffixes
+
+
+# print(get_text_suffixes("go kareem go\n"))
 def lev_distance(text1, text2):
     """
     return the minimum distance between two strings using Levenshtein Algorithm
@@ -50,4 +73,35 @@ def lev_distance(text1, text2):
     # Space O(m)
 
 
-print(lev_distance('abc', 'aac'))
+# alphabet_list = list(string.ascii_lowercase)
+
+
+def generate_distance_one_string(txt):
+    results = []
+    for i in range(len(txt) - 1, 0 - 1, -1):
+        pass
+
+
+def clean_text(text):
+    # Remove white spaces
+    white_spaces = re.compile("\s+")
+    text = white_spaces.sub(' ', text)
+    # Remove html tags
+    remove_htm_tags = re.compile("&[a-zA-Z]*;")
+    text = remove_htm_tags.sub(' ', text)
+    # Take the text as lower
+    text = text.lower()
+    # Remove first space and last enter
+    if text[0] == " ":
+        text = text[1:]
+    if text[len(text) - 1] == '\n':
+        text = text[:-2]
+    return text
+
+
+def get_text_from_path(path, idx):
+    with open(path, 'r+') as fid:
+        lines = fid.readlines()
+        if idx >= 0 and idx < len(lines):
+            return lines[idx]
+    return ''
