@@ -3,28 +3,21 @@ from index_reader import read_index
 from string_utils import clean_text
 
 
-#
-# t = Trie()
-# process_input('Input', t)
-# q = t.query("kir")
-# for res in q:
-#     print(res)
-
-
 def is_valid(user_input):
     """
-
-    :param user_input:
-    :return:
+    check if the user input is valid
+    :param user_input: string
+    :return: True/False
     """
     return len(user_input) > 0
 
 
 def get_valid_input():
     """
-
-    :return:
+    return valid user input
+    :return: user input
     """
+
     while True:
         user_input = input()
         if is_valid(user_input):
@@ -33,9 +26,10 @@ def get_valid_input():
 
 def main():
     """
-
-    :return:
+    the main function
+    :return: None
     """
+
     path = write_index("Input/")
     user_input = ''
     trie = read_index(path)
@@ -52,6 +46,11 @@ def main():
 
 
 def print_suggestions(res):
+    """
+    function to print suggestion for the user
+    :param res: list of results
+    :return: None
+    """
     if len(res) == 0:
         print("There is no suggestions")
         return

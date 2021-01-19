@@ -6,9 +6,9 @@ from trie import Trie
 
 def write_index(dir_path):
     """
-
-    :param dir_path:
-    :return:
+    write trie object into disk
+    :param dir_path: path to load the data from
+    :return: the save path
     """
 
     if not os.path.isdir(dir_path):
@@ -21,4 +21,3 @@ def write_index(dir_path):
         pickle.dump(trie, fid, protocol=pickle.HIGHEST_PROTOCOL)
 
     return save_path
-    # TODO: save trie as pickle file, return the path for the saved file..

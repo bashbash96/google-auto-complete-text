@@ -1,13 +1,12 @@
 import os
 import pickle
-from trie import Trie
 
 
 def read_index(file_path):
     """
-
-    :param file_path:
-    :return:
+    read pickle file
+    :param file_path: path of the pickle file
+    :return: loaded file
     """
     if not os.path.isfile(file_path):
         raise Exception("Invalid file path")

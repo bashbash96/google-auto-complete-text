@@ -7,8 +7,6 @@ def get_text_suffixes(text):
     :param text: the original string
     :return: list of all suffixes
     """
-    # if text[-1] == '\n':
-    #     text = text[:-1]
     words = text.split(' ')
     suffixes = []
     for i in range(len(words)):
@@ -20,7 +18,6 @@ def get_text_suffixes(text):
     return suffixes
 
 
-# print(get_text_suffixes("go kareem go\n"))
 def lev_distance(text1, text2):
     """
     return the minimum distance between two strings using Levenshtein Algorithm
@@ -73,36 +70,38 @@ def lev_distance(text1, text2):
     # Space O(m)
 
 
-# alphabet_list = list(string.ascii_lowercase)
-
-
-def generate_distance_one_string(txt):
-    results = []
-    for i in range(len(txt) - 1, 0 - 1, -1):
-        pass
-
-
 def clean_text(text):
-    # Remove white spaces
-    text = text.encode('ascii', 'ignore').decode('ascii')
+    """
+    clean all non-needed characters
+    :param text: original text
+    :return: filtered text
+    """
 
-    white_spaces = re.compile("\s+")
-    text = white_spaces.sub(' ', text)
-    # Remove html tags
-    remove_htm_tags = re.compile("&[a-zA-Z]*;")
-    text = remove_htm_tags.sub(' ', text)
     # Take the text as lower
     text = text.lower()
-    # Remove first space and last enter
+
+    # Remove white spaces
+    text = text.encode('ascii', 'ignore').decode('ascii')
+    white_spaces = re.compile("\s+")
+    text = white_spaces.sub(' ', text)
+
+    # remove \n
     text = text.replace('\n', '')
 
+    # Remove leading and trailing spaces and last enter
     return text.strip()
 
 
 def get_text_from_path(path, idx):
+    """
+    get a specific line from a specific file by its path and its index
+    :param path: file path
+    :param idx: line index
+    :return: result line
+    """
+
     with open(path, 'r+', encoding="utf8") as fid:
         lines = fid.readlines()
         if idx >= 0 and idx < len(lines):
             return lines[idx]
     return ''
-

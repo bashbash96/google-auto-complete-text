@@ -30,7 +30,7 @@ def process_input(dir_path, trie):
 
 def insert_file_to_trie(path, trie):
     """
-    insert all file sentences (a live) into the trie data structure
+    insert all file sentences (a line) into the trie data structure
     :param path: file path
     :param trie: trie object
     :return: None
