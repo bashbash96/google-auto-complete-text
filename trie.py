@@ -55,8 +55,7 @@ class Trie(object):
                 if char in node.children:
                     node = node.children[char]
                 else:
-                    # If a character is not found,
-                    # create a new node in the trie
+                    # If a character is not found, create a new node in the trie
                     new_node = TrieNode(char)
                     node.children[char] = new_node
                     node = new_node
@@ -100,21 +99,21 @@ class Trie(object):
         self.dfs(node, text[:-1], len(text), 0, k)
 
     @staticmethod
-    def get_score(idx, type):
+    def get_score(idx, type_):
         """
         get score to specific correction by its type
 
         :param idx: the index of the spelling error
-        :param type: 1- substitution, 2- removal/addition
+        :param type_: 1- substitution, 2- removal/addition
         :return: the relevant score
         """
 
         # if the index is after the fourth one, then its according to type
         if idx >= (LAST_CHAR_SCORE - 1):
-            return type
+            return type_
 
         # the score has opposite correlation with the index of the error
-        return type * (LAST_CHAR_SCORE - idx)
+        return type_ * (LAST_CHAR_SCORE - idx)
 
     def get_substitution_match(self, text, node, k, idx=0, sub_idx=-1, spelling_err=0):
         """
@@ -165,9 +164,9 @@ class Trie(object):
                 return
             else:
                 for char in node.children:
-                    curr_ndoe = node.children[char]
-                    if text[idx + 1] in curr_ndoe.children:
-                        self.get_substitution_match(text[:idx] + char + text[idx + 1:], curr_ndoe, k, idx + 1, idx,
+                    curr_node = node.children[char]
+                    if text[idx + 1] in curr_node.children:
+                        self.get_substitution_match(text[:idx] + char + text[idx + 1:], curr_node, k, idx + 1, idx,
                                                     spelling_err)
 
     def get_remove_match(self, text, node, k, idx=0, rem_idx=-1, spelling_err=0):
@@ -266,9 +265,9 @@ class Trie(object):
             # is a child of the added char node from the trie in order not to get two spelling errors
             spelling_err += 1
             for char in node.children:
-                curr_ndoe = node.children[char]
-                if text[idx] in curr_ndoe.children:
-                    self.get_add_match(text[:idx] + char + text[idx:], curr_ndoe, k, idx + 1, idx,
+                curr_node = node.children[char]
+                if text[idx] in curr_node.children:
+                    self.get_add_match(text[:idx] + char + text[idx:], curr_node, k, idx + 1, idx,
                                        spelling_err)
 
     def dfs(self, node, prefix, original_len, error_score, k):

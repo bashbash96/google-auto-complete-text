@@ -16,8 +16,8 @@ def write_index(dir_path):
 
     trie = Trie()
     process_input(dir_path, trie)
-    save_path = 'result.pickle'
-    with open(save_path, 'wb') as fid:
-        pickle.dump(trie, fid, protocol=pickle.HIGHEST_PROTOCOL)
+    # save_path = 'result.pickle'
+    # with open(save_path, 'wb') as fid:
+    #     pickle.dump(trie, fid, protocol=pickle.HIGHEST_PROTOCOL)
 
-    return save_path
+    return trie
