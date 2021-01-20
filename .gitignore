@@ -8,7 +8,6 @@ venv/
 Archive/
 result.pickle
 big-same/
-Input/
 
 # C extensions
 *.so
